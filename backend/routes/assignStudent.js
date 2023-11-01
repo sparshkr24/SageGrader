@@ -5,13 +5,14 @@ const router = express.Router();
 // TODO: return value to Boolean ???
 router.get("/", async (req, res) => {
   try {
-    const { studentId } = req.body;
+    let { studentId } = req.query;
     // validation for the required fields
-    studentId = studentId.trim();
     if (!studentId) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
-    const student = await req.prisma.mentorGroup.findUnique({
+
+    studentId = parseInt(studentId);
+    const student = await req.prisma.mentorGroup.findFirst({
       where: {
         student_id: studentId,
       }
@@ -40,12 +41,13 @@ router.get("/all/", async (req, res) => {
 // TODO: change the route name
 router.get("/mentor/", async (req, res) => {
   try {
-    const { mentorId } = req.body;
+    let { mentorId } = req.query;
     // validation for the required fields
-    mentorId = mentorId.trim();
     if (!mentorId) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
+
+    mentorId = parseInt(mentorId);
     const students = await req.prisma.mentorGroup.findMany({
       where: {
         mentor_id: mentorId,
@@ -63,20 +65,44 @@ router.post("/", async (req, res) => {
   try {
     // get all the required fields from the body
     // TODO : we will be getting the ID in the BODY ????
-    const { studentId, mentorId } = req.body;
+    let { studentId, mentorId } = req.body;
     // validation for the required fields
-    studentId = studentId.trim();
-    mentorId = mentorId.trim();
     if (!studentId || !mentorId) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
+
+    studentId = parseInt(studentId);
+    mentorId = parseInt(mentorId);
+
+    //check if the student exists
+    const student = await req.prisma.student.findUnique({
+      where: {
+        id: studentId,
+      }
+    });
+
+    if(!student){
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    //check if the mentor exists
+    const mentor = await req.prisma.mentor.findUnique({
+      where: {
+        id: mentorId,
+      }
+    });
+
+    if(!mentor){
+      return res.status(404).json({ error: "Mentor not found" });
+    }
+
     const newStudent = await req.prisma.mentorGroup.create({
       data: {
         student_id: studentId,
         mentor_id: mentorId,
       }
     });
-    res.json({ data: newStudent });
+    res.status(200).json({ data: newStudent });
   } catch (error) {
     console.error("Error creating mentor:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -88,11 +114,11 @@ router.delete("/", async (req, res) => {
   try {
     const { studentId, mentorId } = req.body;
     // validation for the required fields
-    studentId = studentId.trim();
-    mentorId = mentorId.trim();
     if (!studentId || !mentorId) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
+    studentId = parseInt(studentId);
+    mentorId = parseInt(mentorId);
     const deletedStudent = await req.prisma.mentorGroup.delete({
       where: {
         student_id: studentId,

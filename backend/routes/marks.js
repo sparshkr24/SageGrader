@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
     studentId = parseInt(studentId.trim());
     console.log("studentId: ", studentId);
 
-    const student = await req.prisma.marks.findUnique({
+    const student = await req.prisma.marks.findFirst({
       where: {
         student_id: studentId,
       }

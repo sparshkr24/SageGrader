@@ -12,11 +12,12 @@ datasource db {
 
 model Student {
   id              Int           @id @default(autoincrement())
-  student_roll    Int
+  student_roll    String
   student_name    String
   student_batch   Int
   student_program String
   student_branch  String
+  email           String
   mentorGroups    MentorGroup[]
   marks           Marks?
 }
@@ -32,7 +33,7 @@ model MentorGroup {
   id          Int     @id @default(autoincrement())
   mentor_id   Int
   student_id  Int
-  lock_status Boolean
+  lock_status Boolean @default(false)
   mentor      Mentor  @relation(fields: [mentor_id], references: [id], onDelete: Cascade)
   student     Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
 }
@@ -40,8 +41,8 @@ model MentorGroup {
 model Marks {
   id         Int     @id @default(autoincrement())
   student_id Int     @unique
-  ideation   Int?
-  execution  Int?
-  pitch      Int?
+  ideation   Int
+  execution  Int
+  pitch      Int
   student    Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
 }
