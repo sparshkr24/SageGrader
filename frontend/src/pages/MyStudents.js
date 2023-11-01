@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import StudentCard from '../Components/StudentCard'
 import { Box } from '@chakra-ui/react'
+import axios from 'axios'
 
 const data = [
   {
@@ -30,10 +31,28 @@ const data = [
 ]
 
 const MyStudents = () => {
+  const [myStudents, setMyStudents] = useState(data)
+  const mentorId = 10;
+
+  useEffect(()=>{
+    const fetchMyStudentData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/assignStudent/mentor?mentorId=${mentorId}`
+        );
+        setMyStudents(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMyStudentData();
+  
+  })
   return (
     <>
       {
-        data.map((item, index) => {
+        myStudents.map((item, index) => {
           return (
             <Box key={index} margin={'24px'}>
               <StudentCard data={item} />
