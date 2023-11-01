@@ -17,6 +17,11 @@ router.get("/", async (req, res) => {
     const student = await req.prisma.marks.findFirst({
       where: {
         student_id: studentId,
+      },
+      select: {
+        ideation: true,
+        execution: true,
+        pitch: true,
       }
     });
     return res.json({ data: student });

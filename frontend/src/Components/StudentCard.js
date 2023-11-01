@@ -11,20 +11,16 @@ import axios from "axios";
 
 const StudentCard = ({ data }) => {
   const mentorId = 10;
-  const [marks, setMarks] = useState({
-    ideation: 8,
-    execution: 9,
-    pitch: 7,
-  });
+  
 
-  const unAssignStudent = async (id) => {
+  const unAssignStudent = async () => {
     try {
       const bodyData = {
-        studentId: id,
+        studentId: data.id,
         mentorId: mentorId,
       };
       const res = await axios.delete(
-        `http://localhost:5000/api/assignStudent?studentId=${id}&mentorId=${mentorId}`,
+        `http://localhost:5000/api/assignStudent?studentId=${data.id}&mentorId=${mentorId}`,
         bodyData
       );
       console.log(res.data.data);
@@ -33,20 +29,25 @@ const StudentCard = ({ data }) => {
     }
   };
 
-  useEffect(()=>{
-    const fetchMarks = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/api/marks/student?studentId=${data.id}`
-        );
-        setMarks(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchMarks();
-  }, [data.id])
+//   const assignMarks = async (studentId) => {
+//     console.log("Save button clicked");
+//     try {
+//       const bodyData = {
+//         studentId: studentId,
+//         mentorId: mentorId,
+//         ideation: marks.ideation,
+//         execution: marks.execution,
+//         pitch: marks.pitch,
+//       };
+//       const res = await axios.post(
+//         "http://localhost:5000/api/marks",
+//         bodyData
+//       );
+//       console.log(res.data.data);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
 
   return (
     <>
@@ -70,7 +71,7 @@ const StudentCard = ({ data }) => {
         </HStack>
         <HStack gap={10}>
           <Text fontSize={{ base: "sm" }} textAlign={"left"} maxW={"4xl"}>
-            Total Marks: {marks.ideation + marks.execution + marks.pitch}
+            Total Marks: {data.ideation + data.execution + data.pitch}
           </Text>
         </HStack>
         <Stack
@@ -80,7 +81,7 @@ const StudentCard = ({ data }) => {
           <HStack>
             <Text>Ideation:</Text>
             <NumberInput
-              defaultValue={marks.ideation}
+              defaultValue={data?.ideation}
               min={0}
               max={10}
               size={"sm"}
@@ -92,7 +93,7 @@ const StudentCard = ({ data }) => {
           <HStack>
             <Text>Execution:</Text>
             <NumberInput
-              defaultValue={marks.execution}
+              defaultValue={data.execution? data.execution : null}
               min={0}
               max={10}
               size={"sm"}
@@ -104,7 +105,7 @@ const StudentCard = ({ data }) => {
           <HStack>
             <Text>Pitch:</Text>
             <NumberInput
-              defaultValue={marks.pitch}
+              defaultValue={data.pitch? data.pitch : null}
               min={0}
               max={10}
               size={"sm"}
@@ -119,7 +120,7 @@ const StudentCard = ({ data }) => {
             </Button>
             <Button
               onClick={() => {
-                unAssignStudent(data.id);
+                unAssignStudent();
               }}
               colorScheme="red"
             >

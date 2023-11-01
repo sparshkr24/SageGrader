@@ -58,26 +58,11 @@ router.get("/mentor/", async (req, res) => {
 
     mentorId = parseInt(mentorId);
 
-    // const students = await req.prisma.mentorGroup.findMany({
-    //   where: {
-    //     mentor_id: mentorId,
-    //   },
-    //   // Include only specific fields from the Student table
-    //   include: {
-    //     student: {
-    //       select: {
-    //         student_roll: true,
-    //         student_name: true,
-    //         student_batch: true,
-    //         student_branch: true,
-    //         email: true,
-    //       },
-    //     },
-    //   },
-    // });
+    
     const students = await req.prisma.$queryRaw`
-      SELECT * FROM "Student"
-      WHERE id in 
+      SELECT s.*, m.ideation, m.execution, m.pitch FROM "Student" s
+      LEFT JOIN "Marks" m ON m.student_id = s.id
+      WHERE s.id in 
       (SELECT student_id FROM "MentorGroup" WHERE mentor_id = ${mentorId})`;
 
     res.json({ data: students });
@@ -181,6 +166,12 @@ router.delete("/", async (req, res) => {
       where: {
         student_id: studentId,
         mentor_id: mentorId,
+      }
+    });
+
+    const deletedMarks = await req.prisma.marks.delete({
+      where: {
+        student_id: studentId,
       }
     });
     res.json({ data: deletedStudent });
