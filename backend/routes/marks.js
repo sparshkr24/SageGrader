@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
     mentorId = parseInt(mentorId);
 
     const maximumMarks = 10;
-    
+
     // check if ideation, execution, pitch are numbers
     if (isNaN(ideation) || isNaN(execution) || isNaN(pitch)) {
       return res.status(400).json({ error: "Please provide marks in numbers" });
@@ -71,9 +71,10 @@ router.post("/", async (req, res) => {
     // check if the student is accommodated under this mentor
     const isStudentAccommodated = await isAssignedUnderThisMentor(req, studentId, mentorId);
     if (!isStudentAccommodated) {
-      return res.status(400).json({ error: "Student is not accommodated under this mentor" });
+      return res.status(403).json({ error: "Student is not accommodated under this mentor" });
     }
 
+    console.log("here");
     // check if the student is already marked
     const isStudentMarked = await req.prisma.marks.findUnique({
       where: {
