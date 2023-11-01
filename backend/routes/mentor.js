@@ -45,16 +45,15 @@ router.post("/", async (req, res) => {
 
     // get all the required fields from the body
     // TODO : we will be getting the ID in the BODY ????
-    let { id, name, dept } = req.body;
+    let { mentorName, dept } = req.body;
 
     
-    if (!id || !name || !dept) {
+    if ( !mentorName || !dept) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
 
-    // validation for the required fields
-    id = id.trim();
-    name = name.trim();
+
+    mentorName = mentorName.trim();
     dept = dept.trim();
 
     const departmentsInTheInstitute = ["CSE", "ECE", "ME", "Design", "Physics", "Mathematics", "Chemistry", "HSS"];
@@ -64,8 +63,7 @@ router.post("/", async (req, res) => {
 
     const newMentor = await req.prisma.mentor.create({
       data: {
-        mentor_id: id,
-        mentor_name: name,
+        mentor_name: mentorName,
         mentor_dept: dept,
       }
     });

@@ -1,7 +1,4 @@
 import { ChakraProvider } from '@chakra-ui/react'
-
-
-
 import {
   createBrowserRouter,
   RouterProvider,

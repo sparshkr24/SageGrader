@@ -60,7 +60,7 @@ router.get("/mentor/", async (req, res) => {
   }
 });
 
-// to accommodate a student under a mentor
+// to assign a student under a mentor
 router.post("/", async (req, res) => {
   try {
     // get all the required fields from the body
@@ -96,6 +96,17 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ error: "Mentor not found" });
     }
 
+    // check if the student is already accommodated under a mentor
+    const isStudentAccommodated = await req.prisma.mentorGroup.findFirst({
+      where: {
+        student_id: studentId,
+      }
+    });
+
+    if (isStudentAccommodated) {
+      return res.status(403).json({ error: "Student is already accommodated" });
+    }
+
     const newStudent = await req.prisma.mentorGroup.create({
       data: {
         student_id: studentId,
@@ -119,7 +130,7 @@ router.delete("/", async (req, res) => {
     }
     studentId = parseInt(studentId);
     mentorId = parseInt(mentorId);
-    
+
     const deletedStudent = await req.prisma.mentorGroup.delete({
       where: {
         student_id: studentId,

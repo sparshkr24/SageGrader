@@ -1,5 +1,5 @@
 import React from 'react'
-import StudentCard from '../components/StudentCard'
+import StudentCard from '../Components/StudentCard'
 import { Box } from '@chakra-ui/react'
 
 const data = [

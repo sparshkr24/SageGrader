@@ -11,15 +11,14 @@ datasource db {
 }
 
 model Student {
-  id              Int           @id @default(autoincrement())
-  student_roll    String
-  student_name    String
-  student_batch   Int
-  student_program String
-  student_branch  String
-  email           String
-  mentorGroups    MentorGroup[]
-  marks           Marks?
+  id             Int           @id @default(autoincrement())
+  student_roll   String
+  student_name   String
+  student_batch  Int
+  student_branch String
+  email          String        @unique
+  mentorGroups   MentorGroup[]
+  marks          Marks?
 }
 
 model Mentor {
