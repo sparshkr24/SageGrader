@@ -1,0 +1,19 @@
+{
+  "name": "sparsh_kumar",
+  "version": "1.0.0",
+  "description": "Scaler project for SDE Intern",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.5.2"
+  }
+}

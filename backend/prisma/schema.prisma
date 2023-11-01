@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id           Int      @id @default(autoincrement())
+  student_roll Int
+  student_name String
+  student_year Int
+  student_program String
+  student_branch String
+  mentorGroups MentorGroup[]
+}
+
+model Mentor {
+  id         Int      @id @default(autoincrement())
+  mentor_name String
+  mentor_dept String
+  mentorGroups MentorGroup[]
+}
+
+model MentorGroup {
+  id          Int       @id @default(autoincrement())
+  mentor_id    Int
+  student_id   Int
+  lock_status  Boolean
+  mentor       Mentor    @relation(fields: [mentor_id], references: [id], onDelete: Cascade)
+  student      Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
+}
+
+model Marks {
+  id       Int      @id @default(autoincrement())
+  group_id Int
+  ideation  Int?
+  execution Int?
+  pitch     Int?
+  group    MentorGroup   @relation(fields: [group_id], references: [id], onDelete: Cascade) 
+}
+
