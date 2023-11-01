@@ -119,6 +119,7 @@ router.delete("/", async (req, res) => {
     }
     studentId = parseInt(studentId);
     mentorId = parseInt(mentorId);
+    
     const deletedStudent = await req.prisma.mentorGroup.delete({
       where: {
         student_id: studentId,

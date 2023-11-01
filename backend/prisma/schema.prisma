@@ -32,7 +32,7 @@ model Mentor {
 model MentorGroup {
   id          Int     @id @default(autoincrement())
   mentor_id   Int
-  student_id  Int
+  student_id  Int     @unique
   lock_status Boolean @default(false)
   mentor      Mentor  @relation(fields: [mentor_id], references: [id], onDelete: Cascade)
   student     Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
