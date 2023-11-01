@@ -107,6 +107,16 @@ router.post("/", async (req, res) => {
       return res.status(403).json({ error: "Student is already accommodated" });
     }
 
+    const totalMentorGroupRecords = await req.prisma.mentorGroup.count({
+      where: {
+        mentor_id: mentorId,
+      },
+    });
+
+    if(totalMentorGroupRecords == 4){
+      return res.status(403).json({ error: "A Mentor cannot have more than 4 students assigned to them" });
+    }
+
     const newStudent = await req.prisma.mentorGroup.create({
       data: {
         student_id: studentId,

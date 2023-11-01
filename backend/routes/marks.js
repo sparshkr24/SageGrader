@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
     mentorId = parseInt(mentorId);
 
     const maximumMarks = 10;
-    // ideation, execution, pitch are marks out of maximumMarks
+    
     // check if ideation, execution, pitch are numbers
     if (isNaN(ideation) || isNaN(execution) || isNaN(pitch)) {
       return res.status(400).json({ error: "Please provide marks in numbers" });
