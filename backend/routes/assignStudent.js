@@ -29,8 +29,17 @@ router.get("/", async (req, res) => {
 // Route to get all accommodated students
 router.get("/all/", async (req, res) => {
   try {
-    const allStudents = await req.prisma.mentorGroup.findMany();
-    res.json({ data: allStudents });
+    const allStudents = await req.prisma.mentorGroup.findMany({
+      select: {
+        student_id: true,
+      }
+    });
+
+    studentIdList = allStudents.map((student) => {
+      return student.student_id;
+    });
+    
+    res.json({ data: studentIdList });
   } catch (error) {
     console.error("Error fetching students ", error);
     res.status(500).json({ error: "Internal server error" });
@@ -42,23 +51,43 @@ router.get("/all/", async (req, res) => {
 router.get("/mentor/", async (req, res) => {
   try {
     let { mentorId } = req.query;
-    // validation for the required fields
+    // Validation for the required fields
     if (!mentorId) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
 
     mentorId = parseInt(mentorId);
-    const students = await req.prisma.mentorGroup.findMany({
-      where: {
-        mentor_id: mentorId,
-      }
-    });
+
+    // const students = await req.prisma.mentorGroup.findMany({
+    //   where: {
+    //     mentor_id: mentorId,
+    //   },
+    //   // Include only specific fields from the Student table
+    //   include: {
+    //     student: {
+    //       select: {
+    //         student_roll: true,
+    //         student_name: true,
+    //         student_batch: true,
+    //         student_branch: true,
+    //         email: true,
+    //       },
+    //     },
+    //   },
+    // });
+    const students = await req.prisma.$queryRaw`
+      SELECT * FROM "Student"
+      WHERE id in 
+      (SELECT student_id FROM "MentorGroup" WHERE mentor_id = ${mentorId})`;
+
     res.json({ data: students });
   } catch (error) {
     console.error("Error fetching students of a mentor:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
 
 // to assign a student under a mentor
 router.post("/", async (req, res) => {
@@ -73,6 +102,9 @@ router.post("/", async (req, res) => {
 
     studentId = parseInt(studentId);
     mentorId = parseInt(mentorId);
+
+    // console.log("studentId: ", studentId);
+    // console.log("mentorId: ", mentorId);
 
     //check if the student exists
     const student = await req.prisma.student.findUnique({
@@ -133,13 +165,17 @@ router.post("/", async (req, res) => {
 // Route to remove a student from a mentor's guidance
 router.delete("/", async (req, res) => {
   try {
-    const { studentId, mentorId } = req.body;
+    let { studentId, mentorId } = req.query;
     // validation for the required fields
     if (!studentId || !mentorId) {
       return res.status(400).json({ error: "Please provide all the details" });
     }
     studentId = parseInt(studentId);
     mentorId = parseInt(mentorId);
+
+    console.log("studentId: ", studentId);
+    console.log("mentorId: ", mentorId);
+
 
     const deletedStudent = await req.prisma.mentorGroup.delete({
       where: {

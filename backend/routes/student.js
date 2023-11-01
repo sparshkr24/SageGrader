@@ -4,7 +4,17 @@ const router = express.Router();
 // Route to get students without a MentorGroup
 router.get("/", async (req, res) => {
   try {
-    const allStudents = await req.prisma.student.findMany();
+    let {page} = req.query;
+    page = parseInt(page);
+
+    const rowsPerPage = 10;
+
+    const take = rowsPerPage;
+    const skip = (page - 1) * rowsPerPage;
+    const allStudents = await req.prisma.student.findMany({
+      take: take,
+      skip: skip,
+    });
 
     res.json({ data: allStudents });
   } catch (error) {
