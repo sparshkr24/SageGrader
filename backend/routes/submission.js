@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const sendMail = require("../utils/mail/sendMail");
 
 
 router.get("/all", async (req, res) => {
@@ -92,8 +93,17 @@ router.post("/lock", async (req, res) => {
       });
     }
 
-    
-    res.json({data: `Submission for mentor_id: ${mentorId} locked successfully `});
+    for (const student of studentData){
+      const emailData = {
+        to: "20bcs219@iiitdmj.ac.in", // using my own email to avoid disturbing others (${student.email} will send to real Ids)
+        subject: `Assignment Graded - ${student.student_roll}`,
+        text: `Your assignment has been graded by your mentor. Please login to the portal to view your marks.\nTotal Marks: ${student.ideation + student.execution + student.pitch}`
+      }
+
+      sendMail(emailData)
+    }
+
+    return res.json({data: `Submission for mentor_id: ${mentorId} locked successfully `});
   } catch (error) {
     console.error("Error Locking the submission of the group:", error);
     res.status(500).json({ error: "Internal server error" });

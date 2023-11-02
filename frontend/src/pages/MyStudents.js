@@ -62,6 +62,9 @@ const MyStudents = () => {
         });
         setMyStudents(newStudents);
         toast.success("Submission locked successfully");
+        setTimeout(()=>{
+          toast.success("Emails notification sent to students");
+        }, [1000])
       }
     } catch (error) {
       if (myStudents.length < 3) {
