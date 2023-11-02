@@ -9,7 +9,7 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import axios from "axios";
+import api from "../helper/api";
 import { PacmanLoader } from "react-spinners";
 
 const boxStyle = {
@@ -27,8 +27,8 @@ const Submission = () => {
     const fetchSubmissionData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          `http://localhost:5000/api/submission/all?markStatus=${markStatus}`
+        const res = await api.get(
+          `/submission/all?markStatus=${markStatus}`
         );
         console.log(res.data.data);
         setSubmissionData(res.data.data);

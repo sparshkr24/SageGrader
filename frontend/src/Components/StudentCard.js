@@ -16,26 +16,6 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
     pitch: data.pitch,
   });
 
-  // const assignMarks = async (marks) => {
-  //   console.log("Save button clicked");
-  //   try {
-  //     const bodyData = {
-  //       studentId: data.id,
-  //       mentorId: mentorId,
-  //       ideation: marks.ideation,
-  //       execution: marks.execution,
-  //       pitch: marks.pitch,
-  //     };
-  //     const res = await axios.post(
-  //       "http://localhost:5000/api/marks",
-  //       bodyData
-  //     );
-  //     console.log(res.data.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
   useEffect(() => {
     console.log("marks", marks);
   }, [marks]);
