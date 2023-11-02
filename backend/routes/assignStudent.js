@@ -4,7 +4,6 @@ const {isStudentAssigned, getAllAssignedStudents, getAssignedStudentsByMentorId}
 const {assignStudentToMentor, unAssignStudentFromMentor} = require("../controllers/assignStudent/assignStudentToMentor");
 
 // Route to get if a student is assigned or not
-// TODO: return value to Boolean ???
 router.get("/", isStudentAssigned);
 
 
@@ -12,7 +11,6 @@ router.get("/", isStudentAssigned);
 router.get("/all/", getAllAssignedStudents);
 
 // Route to get all the assigned students of a mentor
-// TODO: change the route name
 router.get("/mentor/", getAssignedStudentsByMentorId);
 
 

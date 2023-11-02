@@ -9,6 +9,7 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
+import { toast } from 'react-hot-toast';
 import axios from "axios";
 
 // import icon from "./MyStudents/greenCheck.svg";
@@ -70,8 +71,10 @@ const MyStudents = () => {
           return student.id !== id;
         });
         setMyStudents(newStudents);
+        toast.success("Student removed successfully");
       }
     } catch (error) {
+      toast.error("Error while removing student");
       console.log(error);
     }
   };
@@ -134,6 +137,14 @@ const MyStudents = () => {
             Lock Submission
           </Button>
         )}
+      </Flex>
+      <Flex
+        align="center"
+        p={4}
+        paddingX={"40px"}
+        color={"yellow.500"}
+      >
+        <Text fontWeight="semibold" fontSize="lg">Note:{" "}</Text> Please select atleast 3 students to lock the submission.
       </Flex>
       {myStudents.map((item, index) => {
         return (

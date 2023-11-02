@@ -1,6 +1,49 @@
 const express = require("express");
 const router = express.Router();
 
+
+router.get("/all", async (req, res) => {
+  try {
+    let {markStatus} = req.query
+    let data;
+
+    if(!markStatus){
+      return res.status(400).json({ error: "Please provide all the details" });
+    }
+
+    if(markStatus == "unassigned"){
+      data = await req.prisma.$queryRaw`SELECT s.*, mg.mentor_id FROM "Student" s
+      JOIN "MentorGroup" mg ON s.id = mg.student_id
+      WHERE s.id NOT IN (SELECT student_id FROM "Marks")
+      `;
+    }
+    else if(markStatus == "assigned"){
+      data = await req.prisma.$queryRaw`SELECT s.*, m.ideation, m.execution, m.pitch, mg.lock_status, mg.mentor_id
+        FROM "Student" s
+        JOIN "Marks" m ON s.id = m.student_id
+        LEFT JOIN "MentorGroup" mg ON s.id = mg.student_id
+        WHERE mg.lock_status = false
+        ORDER BY mg.mentor_id ASC`;
+    }
+    else if(markStatus == "lock"){
+      data = await req.prisma.$queryRaw`SELECT s.*, m.ideation, m.execution, m.pitch, mg.lock_status, mg.mentor_id
+        FROM "Student" s
+        LEFT JOIN "Marks" m ON s.id = m.student_id
+        LEFT JOIN "MentorGroup" mg ON s.id = mg.student_id
+        WHERE mg.lock_status = true
+        ORDER BY mg.mentor_id ASC`;
+    }
+
+    
+    res.json({ data });
+
+  } catch (error) {
+    console.error("Error fetching all the groups:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
+
+
 // Route to lock submission of a group 
 router.post("/lock", async (req, res) => {
   try {

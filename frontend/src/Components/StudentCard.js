@@ -136,7 +136,7 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
             </NumberInput>
           </HStack>
           <Stack direction={{ base: "column", md: "row" }}>
-            <Button onClick={() => {assignMarks(data.id, marks)}} variant="outline" colorScheme="green">
+            <Button isDisabled={data.lock_status} onClick={() => {assignMarks(data.id, marks)}} variant="outline" colorScheme="green">
               Save
             </Button>
             <Button
@@ -144,6 +144,7 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
                 unAssignStudent(data.id);
               }}
               colorScheme="red"
+              isDisabled={data.lock_status}
             >
               Delete
             </Button>

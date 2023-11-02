@@ -35,33 +35,33 @@ const SubmissionCard = ({data}) => {
         <Box p={6}>
           <Stack spacing={0} align={'center'} mb={5}>
             <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-              {data.name}
+              {data.student_name}
             </Heading>
-            <Text color={'gray.500'}>{data.rollNumber}</Text>
+            <Text color={'gray.500'}>{data.student_roll}</Text>
           </Stack>
 
           <Stack spacing={0} align={'center'} mb={5}>
             <Heading fontSize={'lg'} fontWeight={500} fontFamily={'body'}>
               Total Marks
             </Heading>
-            <Text color={'gray.500'}>{data.ideation + data.execution + data.pitch}</Text>
+            <Text color={'gray.500'}>{isNaN(data.ideation + data.execution + data.pitch)? "Pending": data.ideation + data.execution + data.pitch}</Text>
           </Stack>
 
           <Stack direction={'row'} justify={'center'} spacing={6} marginBottom={'10px'}>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{data.ideation}</Text>
+              <Text fontWeight={600}>{data.ideation? data.ideation : "Pending"}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
                 Ideation
               </Text>
             </Stack>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{data.execution}</Text>
+              <Text fontWeight={600}>{data.execution? data.execution : "Pending"}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
                 Execution
               </Text>
             </Stack>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{data.pitch}</Text>
+              <Text fontWeight={600}>{data.pitch? data.pitch: "Pending"}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
                 Pitch
               </Text>

@@ -47,18 +47,24 @@ const assignStudentToMentor = async (req, res) => {
       return res.status(403).json({ error: "Student is already accommodated" });
     }
 
-    const totalMentorGroupRecords = await req.prisma.mentorGroup.count({
+    const totalMentorGroupRecords = await req.prisma.mentorGroup.findMany({
       where: {
         mentor_id: mentorId,
       },
     });
 
-    if (totalMentorGroupRecords == 4) {
+    if (totalMentorGroupRecords.length == 4) {
       return res
         .status(403)
         .json({
           error: "A Mentor cannot have more than 4 students assigned to them",
         });
+    }
+
+    if(totalMentorGroupRecords[0]?.lock_status){
+      return res.status(403).json({
+        error: "Mentor has already locked the submission of the group"
+      })
     }
 
     const newStudent = await req.prisma.mentorGroup.create({

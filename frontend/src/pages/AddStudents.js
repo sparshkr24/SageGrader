@@ -13,6 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-hot-toast';
 import axios from "axios";
 
 const AddStudents = () => {
@@ -74,6 +75,7 @@ const AddStudents = () => {
       );
       if (res.status === 200) {
         console.log(res.data.data);
+        toast.success("Student assigned successfully");
       } else {
         console.log(res.data.error);
       }
