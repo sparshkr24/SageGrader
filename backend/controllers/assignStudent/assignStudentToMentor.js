@@ -1,3 +1,5 @@
+const { isAssignedUnderThisMentor } = require("../../utils/helper");
+
 const assignStudentToMentor = async (req, res) => {
   try {
     // get all the required fields from the body
@@ -92,18 +94,22 @@ const unAssignStudentFromMentor = async (req, res) => {
   
       console.log("studentId: ", studentId);
       console.log("mentorId: ", mentorId);
+
+      const isValidStudent = await isAssignedUnderThisMentor(req, studentId, mentorId);
+      if(!isValidStudent){
+        return res.status(403).json({error: "Student is not assigned under this mentor"})
+      }
   
   
       const deletedStudent = await req.prisma.mentorGroup.delete({
         where: {
           student_id: studentId,
-          mentor_id: mentorId,
         }
       });
   
       const deletedMarks = await req.prisma.$queryRaw`DELETE FROM "Marks" WHERE student_id = ${studentId}`;
       
-      res.json({ data: deletedStudent });
+      res.json({ data: "student deleted successfully" });
     } catch (error) {
       console.error("Error deleting student from mentor's guidance:", error);
       res.status(500).json({ error: "Internal server error" });

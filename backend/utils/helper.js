@@ -6,7 +6,7 @@ async function isAssignedUnderThisMentor(req, studentId, mentorId) {
           student_id: studentId,
         }
       });
-      console.log("Student: ", studentGroup);
+      // console.log("Student: ", studentGroup);
       if (studentGroup[0].mentor_id === mentorId) {
         return true;
       } else {
