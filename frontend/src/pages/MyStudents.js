@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import StudentCard from "../Components/StudentCard";
-import { Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  CheckboxIcon,
+  Flex,
+  Heading,
+  Spacer,
+  Text,
+} from "@chakra-ui/react";
 import axios from "axios";
+
+// import icon from "./MyStudents/greenCheck.svg";
 
 const MyStudents = () => {
   const [myStudents, setMyStudents] = useState([]);
@@ -27,25 +37,35 @@ const MyStudents = () => {
       const bodyData = {
         studentData: myStudents,
         mentorId: mentorId,
-      }
+      };
       const res = await axios.post(
-        `http://localhost:5000/api/submission/lock`, bodyData
+        `http://localhost:5000/api/submission/lock`,
+        bodyData
       );
       console.log(res.data.data);
+
+      if(res.status === 200){
+        const newStudents = myStudents.map((student) => {
+          return {
+            ...student,
+            lock_status: true,
+          };
+        });
+        setMyStudents(newStudents);
+      }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const unAssignStudent = async (id) => {
     try {
-      
       const res = await axios.delete(
         `http://localhost:5000/api/assignStudent?studentId=${id}&mentorId=${mentorId}`
       );
       console.log(res.data.data);
 
-      if(res.status === 200){
+      if (res.status === 200) {
         const newStudents = myStudents.filter((student) => {
           return student.id !== id;
         });
@@ -66,20 +86,17 @@ const MyStudents = () => {
         execution: marks.execution,
         pitch: marks.pitch,
       };
-      const res = await axios.post(
-        "http://localhost:5000/api/marks",
-        bodyData
-      );
+      const res = await axios.post("http://localhost:5000/api/marks", bodyData);
 
-      if(res.status === 200){
+      if (res.status === 200) {
         const newStudents = myStudents.map((student) => {
-          if(student.id === id){
+          if (student.id === id) {
             return {
               ...student,
               ideation: marks.ideation,
               execution: marks.execution,
               pitch: marks.pitch,
-            }
+            };
           } else {
             return student;
           }
@@ -90,23 +107,42 @@ const MyStudents = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <>
-      <Flex align="center" p={4} boxShadow="md" bgColor="white" paddingX={'40px'}>
+      <Flex
+        align="center"
+        p={4}
+        boxShadow="md"
+        bgColor="white"
+        paddingX={"40px"}
+      >
         <Heading as="h1" size="lg">
           My Students
         </Heading>
         <Spacer />
-        <Button onClick={handleLockSubmissions} colorScheme="blue" size="sm">
-          Lock Submission
-        </Button>
+        {myStudents[0]?.lock_status ? (
+          <Box display="flex" alignItems="center">
+            <img width={20} height={20} src="./greenCheck.svg" alt="checked" />
+            <Text marginLeft={2} color="green.500" fontWeight="bold">
+              Locked
+            </Text>
+          </Box>
+        ) : (
+          <Button onClick={handleLockSubmissions} colorScheme="blue" size="sm">
+            Lock Submission
+          </Button>
+        )}
       </Flex>
       {myStudents.map((item, index) => {
         return (
           <Box key={index} margin={"24px"}>
-            <StudentCard data={item} unAssignStudent={unAssignStudent} assignMarks={assignMarks} />
+            <StudentCard
+              data={item}
+              unAssignStudent={unAssignStudent}
+              assignMarks={assignMarks}
+            />
           </Box>
         );
       })}

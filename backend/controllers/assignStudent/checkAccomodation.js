@@ -51,8 +51,9 @@ const getAssignedStudentsByMentorId = async (req, res) => {
   
       
       const students = await req.prisma.$queryRaw`
-        SELECT s.*, m.ideation, m.execution, m.pitch FROM "Student" s
+        SELECT s.*, m.ideation, m.execution, m.pitch, mg.lock_status FROM "Student" s
         LEFT JOIN "Marks" m ON m.student_id = s.id
+        LEFT JOIN "MentorGroup" mg ON mg.student_id = s.id
         WHERE s.id in 
         (SELECT student_id FROM "MentorGroup" WHERE mentor_id = ${mentorId})`;
   

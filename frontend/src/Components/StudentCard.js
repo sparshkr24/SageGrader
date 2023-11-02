@@ -87,6 +87,7 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
                   ideation: !isNaN(newValue) ? newValue: null,
                 })
               }}
+              isDisabled={data.lock_status}
             >
               <NumberInputField />
             </NumberInput>
@@ -107,6 +108,8 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
                   execution: !isNaN(newValue) ? newValue: null,
                 })
               }}
+
+              isDisabled={data.lock_status}
             >
               <NumberInputField />
             </NumberInput>
@@ -127,6 +130,7 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
                   pitch: !isNaN(newValue) ? newValue: null,
                 })
               }}
+              isDisabled={data.lock_status}
             >
               <NumberInputField />
             </NumberInput>

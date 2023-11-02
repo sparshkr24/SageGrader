@@ -9,7 +9,7 @@ router.post("/lock", async (req, res) => {
       console.log("Please provide all the details");
       return res.status(400).json({ error: "Please provide all the details" });
     }
-    
+
     if(studentData.length < 3){
       console.log("Please select atleast 3 students");
       return res.status(403).json({ error: "Please select atleast 3 students" });
@@ -49,8 +49,6 @@ router.post("/lock", async (req, res) => {
       });
     }
 
-
-    console.log("\n\n------------------4444-------------\n\n");
     res.json({data: `Submission for mentor_id: ${mentorId} locked successfully `});
   } catch (error) {
     console.error("Error Locking the submission of the group:", error);
