@@ -1,40 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import StudentCard from '../Components/StudentCard'
-import { Box } from '@chakra-ui/react'
-import axios from 'axios'
-
-const data = [
-  {
-    'rollNumber': 1,
-    'name': "sparsh",
-    'branch': 'CSE',
-    'batch': '2020'
-  },
-  {
-    'rollNumber': 2,
-    'name': "sparsh",
-    'branch': 'CSE',
-    'batch': '2020'
-  },
-  {
-    'rollNumber': 3,
-    'name': "sparsh",
-    'branch': 'CSE',
-    'batch': '2020'
-  },
-  {
-    'rollNumber': 4,
-    'name': "sparsh",
-    'branch': 'CSE',
-    'batch': '2020'
-  },
-]
+import React, { useEffect, useState } from "react";
+import StudentCard from "../Components/StudentCard";
+import { Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react";
+import axios from "axios";
 
 const MyStudents = () => {
-  const [myStudents, setMyStudents] = useState(data)
+  const [myStudents, setMyStudents] = useState([]);
   const mentorId = 10;
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchMyStudentData = async () => {
       try {
         const response = await axios.get(
@@ -47,21 +20,62 @@ const MyStudents = () => {
     };
 
     fetchMyStudentData();
-  
-  })
+  }, []);
+
+  const handleLockSubmissions = async () => {
+    try {
+      const bodyData = {
+        studentData: myStudents,
+        mentorId: mentorId,
+      }
+      const res = await axios.post(
+        `http://localhost:5000/api/submission/lock`, bodyData
+      );
+      console.log(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const unAssignStudent = async (id) => {
+    try {
+      
+      const res = await axios.delete(
+        `http://localhost:5000/api/assignStudent?studentId=${id}&mentorId=${mentorId}`
+      );
+      console.log(res.data.data);
+
+      if(res.status === 200){
+        const newStudents = myStudents.filter((student) => {
+          return student.id !== id;
+        });
+        setMyStudents(newStudents);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
-      {
-        myStudents.map((item, index) => {
-          return (
-            <Box key={index} margin={'24px'}>
-              <StudentCard data={item} />
-            </Box>
-          )
-        })
-      }
+      <Flex align="center" p={4} boxShadow="md" bgColor="white" paddingX={'40px'}>
+        <Heading as="h1" size="lg">
+          My Students
+        </Heading>
+        <Spacer />
+        <Button onClick={handleLockSubmissions} colorScheme="blue" size="sm">
+          Lock Submission
+        </Button>
+      </Flex>
+      {myStudents.map((item, index) => {
+        return (
+          <Box key={index} margin={"24px"}>
+            <StudentCard data={item} unAssignStudent={unAssignStudent} />
+          </Box>
+        );
+      })}
     </>
-  )
-}
+  );
+};
 
-export default MyStudents
+export default MyStudents;

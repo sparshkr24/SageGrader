@@ -9,45 +9,38 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const StudentCard = ({ data }) => {
+const StudentCard = ({ data, unAssignStudent }) => {
   const mentorId = 10;
+  const [marks, setMarks] = useState({  
+    ideation: data.ideation,
+    execution: data.execution,
+    pitch: data.pitch,
+  });
   
 
-  const unAssignStudent = async () => {
+  const assignMarks = async (marks) => {
+    console.log("Save button clicked");
     try {
       const bodyData = {
         studentId: data.id,
         mentorId: mentorId,
+        ideation: marks.ideation,
+        execution: marks.execution,
+        pitch: marks.pitch,
       };
-      const res = await axios.delete(
-        `http://localhost:5000/api/assignStudent?studentId=${data.id}&mentorId=${mentorId}`,
+      const res = await axios.post(
+        "http://localhost:5000/api/marks",
         bodyData
       );
       console.log(res.data.data);
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
-//   const assignMarks = async (studentId) => {
-//     console.log("Save button clicked");
-//     try {
-//       const bodyData = {
-//         studentId: studentId,
-//         mentorId: mentorId,
-//         ideation: marks.ideation,
-//         execution: marks.execution,
-//         pitch: marks.pitch,
-//       };
-//       const res = await axios.post(
-//         "http://localhost:5000/api/marks",
-//         bodyData
-//       );
-//       console.log(res.data.data);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
+  useEffect(()=>{
+    console.log("marks", marks);
+  }, [marks])
 
   return (
     <>
@@ -81,11 +74,19 @@ const StudentCard = ({ data }) => {
           <HStack>
             <Text>Ideation:</Text>
             <NumberInput
-              defaultValue={data?.ideation}
+              defaultValue={marks?.ideation}
               min={0}
               max={10}
               size={"sm"}
               width={"75px"}
+              onChange={(newValueString) => {
+                const newValue = parseInt(newValueString); 
+                // console.log("New Value:", !isNaN(newValue) ? newValue: null);
+                setMarks({
+                  ...marks,
+                  ideation: !isNaN(newValue) ? newValue: null,
+                })
+              }}
             >
               <NumberInputField />
             </NumberInput>
@@ -93,11 +94,19 @@ const StudentCard = ({ data }) => {
           <HStack>
             <Text>Execution:</Text>
             <NumberInput
-              defaultValue={data.execution? data.execution : null}
+              defaultValue={marks?.execution}
               min={0}
               max={10}
               size={"sm"}
               width={"75px"}
+              onChange={(newValueString) => {
+                const newValue = parseInt(newValueString); 
+                // console.log("New Value:", !isNaN(newValue) ? newValue: null);
+                setMarks({
+                  ...marks,
+                  execution: !isNaN(newValue) ? newValue: null,
+                })
+              }}
             >
               <NumberInputField />
             </NumberInput>
@@ -105,22 +114,30 @@ const StudentCard = ({ data }) => {
           <HStack>
             <Text>Pitch:</Text>
             <NumberInput
-              defaultValue={data.pitch? data.pitch : null}
+              defaultValue={marks?.pitch}
               min={0}
               max={10}
               size={"sm"}
               width={"75px"}
+              onChange={(newValueString) => {
+                const newValue = parseInt(newValueString); 
+                // console.log("New Value:", !isNaN(newValue) ? newValue: null);
+                setMarks({
+                  ...marks,
+                  pitch: !isNaN(newValue) ? newValue: null,
+                })
+              }}
             >
               <NumberInputField />
             </NumberInput>
           </HStack>
           <Stack direction={{ base: "column", md: "row" }}>
-            <Button variant="outline" colorScheme="green">
+            <Button onClick={assignMarks} variant="outline" colorScheme="green">
               Save
             </Button>
             <Button
               onClick={() => {
-                unAssignStudent();
+                unAssignStudent(data.id);
               }}
               colorScheme="red"
             >

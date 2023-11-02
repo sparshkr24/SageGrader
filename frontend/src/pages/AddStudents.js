@@ -126,7 +126,7 @@ const AddStudents = () => {
                       assignStudent(item.id);
                     }}
                     bg={
-                      assignedStudentsList.includes(item.id) ? "gray.400" : ""
+                      assignedStudentsList.includes(item.id) ? "gray.300" : ""
                     }
                     _hover={
                       assignedStudentsList.includes(item.id)

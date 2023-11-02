@@ -95,11 +95,8 @@ const unAssignStudentFromMentor = async (req, res) => {
         }
       });
   
-      const deletedMarks = await req.prisma.marks.delete({
-        where: {
-          student_id: studentId,
-        }
-      });
+      const deletedMarks = await req.prisma.$queryRaw`DELETE FROM "Marks" WHERE student_id = ${studentId}`;
+      
       res.json({ data: deletedStudent });
     } catch (error) {
       console.error("Error deleting student from mentor's guidance:", error);
