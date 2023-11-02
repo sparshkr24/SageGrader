@@ -29,9 +29,7 @@ const AddStudents = () => {
   useEffect(() => {
     const fetchAssignedStudents = async () => {
       try {
-        const res = await api.get(
-          "/assignStudent/all"
-        );
+        const res = await api.get("/assignStudent/all");
 
         // console.log(res.data.data);
         setAssignedStudentsList(res.data.data);
@@ -48,9 +46,7 @@ const AddStudents = () => {
     const fetchStudentData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(
-          `/student?page=${currentPage}`
-        );
+        const response = await api.get(`/student?page=${currentPage}`);
         setStudentData(response.data.data);
       } catch (error) {
         console.log(error);
@@ -79,10 +75,7 @@ const AddStudents = () => {
         studentId: studentId,
         mentorId: 10,
       };
-      const res = await api.post(
-        "/assignStudent",
-        bodyData
-      );
+      const res = await api.post("/assignStudent", bodyData);
       if (res.status === 200) {
         console.log(res.data.data);
         toast.success("Student assigned successfully");
@@ -123,7 +116,9 @@ const AddStudents = () => {
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
           </Select>
-          <Box>{smallLoading && <PuffLoader size={'40'} color="#36d7b7" />}</Box>
+          <Box>
+            {smallLoading && <PuffLoader size={"40"} color="#36d7b7" />}
+          </Box>
         </HStack>
         <TableContainer>
           <Table colorScheme="teal">
@@ -171,11 +166,16 @@ const AddStudents = () => {
               })}
             </Tbody>
           </Table>
-          <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-            Previous
-          </Button>
-          {currentPage}
-          <Button onClick={handleNextPage}>Next</Button>
+          <Box>
+            <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              Previous
+            </Button>
+            <span style={{ margin: "12px", fontWeight: "bold" }}>
+              {currentPage}{" "}
+            </span>
+
+            <Button onClick={handleNextPage}>Next</Button>
+          </Box>
         </TableContainer>
       </VStack>
     </>
