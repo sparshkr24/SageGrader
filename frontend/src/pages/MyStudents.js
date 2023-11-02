@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { toast } from "react-hot-toast";
-import axios from "axios";
+import api from "../helper/api"
 import { PacmanLoader, PuffLoader } from "react-spinners";
 
 // import icon from "./MyStudents/greenCheck.svg";
@@ -26,8 +26,8 @@ const MyStudents = () => {
     const fetchMyStudentData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:5000/api/assignStudent/mentor?mentorId=${mentorId}`
+        const response = await api.get(
+          `/assignStudent/mentor?mentorId=${mentorId}`
         );
         setMyStudents(response.data.data);
       } catch (error) {
@@ -47,8 +47,8 @@ const MyStudents = () => {
         studentData: myStudents,
         mentorId: mentorId,
       };
-      const res = await axios.post(
-        `http://localhost:5000/api/submission/lock`,
+      const res = await api.post(
+        `/submission/lock`,
         bodyData
       );
       console.log(res.data.data);
@@ -62,6 +62,9 @@ const MyStudents = () => {
         });
         setMyStudents(newStudents);
         toast.success("Submission locked successfully");
+        setTimeout(()=>{
+          toast.success("Emails notification sent to students");
+        }, [1000])
       }
     } catch (error) {
       if (myStudents.length < 3) {
@@ -82,8 +85,8 @@ const MyStudents = () => {
   const unAssignStudent = async (id) => {
     try {
       setSmallLoading(true);
-      const res = await axios.delete(
-        `http://localhost:5000/api/assignStudent?studentId=${id}&mentorId=${mentorId}`
+      const res = await api.delete(
+        `/assignStudent?studentId=${id}&mentorId=${mentorId}`
       );
       console.log(res.data.data);
 
@@ -113,7 +116,7 @@ const MyStudents = () => {
         execution: marks.execution,
         pitch: marks.pitch,
       };
-      const res = await axios.post("http://localhost:5000/api/marks", bodyData);
+      const res = await api.post("/marks", bodyData);
 
       if (res.status === 200) {
         const newStudents = myStudents.map((student) => {

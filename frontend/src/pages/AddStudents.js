@@ -16,8 +16,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import axios from "axios";
 import { PacmanLoader, PuffLoader } from "react-spinners";
+import api from "../helper/api";
 
 const AddStudents = () => {
   const [loading, setLoading] = useState(false);
@@ -29,8 +29,8 @@ const AddStudents = () => {
   useEffect(() => {
     const fetchAssignedStudents = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/assignStudent/all"
+        const res = await api.get(
+          "/assignStudent/all"
         );
 
         // console.log(res.data.data);
@@ -48,8 +48,8 @@ const AddStudents = () => {
     const fetchStudentData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/student?page=${currentPage}`
+        const response = await api.get(
+          `/student?page=${currentPage}`
         );
         setStudentData(response.data.data);
       } catch (error) {
@@ -79,8 +79,8 @@ const AddStudents = () => {
         studentId: studentId,
         mentorId: 10,
       };
-      const res = await axios.post(
-        "http://localhost:5000/api/assignStudent",
+      const res = await api.post(
+        "/assignStudent",
         bodyData
       );
       if (res.status === 200) {
