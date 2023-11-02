@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const StudentCard = ({ data, unAssignStudent }) => {
+const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
   const mentorId = 10;
   const [marks, setMarks] = useState({  
     ideation: data.ideation,
@@ -18,25 +18,25 @@ const StudentCard = ({ data, unAssignStudent }) => {
   });
   
 
-  const assignMarks = async (marks) => {
-    console.log("Save button clicked");
-    try {
-      const bodyData = {
-        studentId: data.id,
-        mentorId: mentorId,
-        ideation: marks.ideation,
-        execution: marks.execution,
-        pitch: marks.pitch,
-      };
-      const res = await axios.post(
-        "http://localhost:5000/api/marks",
-        bodyData
-      );
-      console.log(res.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // const assignMarks = async (marks) => {
+  //   console.log("Save button clicked");
+  //   try {
+  //     const bodyData = {
+  //       studentId: data.id,
+  //       mentorId: mentorId,
+  //       ideation: marks.ideation,
+  //       execution: marks.execution,
+  //       pitch: marks.pitch,
+  //     };
+  //     const res = await axios.post(
+  //       "http://localhost:5000/api/marks",
+  //       bodyData
+  //     );
+  //     console.log(res.data.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   useEffect(()=>{
     console.log("marks", marks);
@@ -132,7 +132,7 @@ const StudentCard = ({ data, unAssignStudent }) => {
             </NumberInput>
           </HStack>
           <Stack direction={{ base: "column", md: "row" }}>
-            <Button onClick={assignMarks} variant="outline" colorScheme="green">
+            <Button onClick={() => {assignMarks(data.id, marks)}} variant="outline" colorScheme="green">
               Save
             </Button>
             <Button

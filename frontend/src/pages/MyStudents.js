@@ -56,6 +56,42 @@ const MyStudents = () => {
     }
   };
 
+  const assignMarks = async (id, marks) => {
+    console.log("Save button clicked");
+    try {
+      const bodyData = {
+        studentId: id,
+        mentorId: mentorId,
+        ideation: marks.ideation,
+        execution: marks.execution,
+        pitch: marks.pitch,
+      };
+      const res = await axios.post(
+        "http://localhost:5000/api/marks",
+        bodyData
+      );
+
+      if(res.status === 200){
+        const newStudents = myStudents.map((student) => {
+          if(student.id === id){
+            return {
+              ...student,
+              ideation: marks.ideation,
+              execution: marks.execution,
+              pitch: marks.pitch,
+            }
+          } else {
+            return student;
+          }
+        });
+        setMyStudents(newStudents);
+      }
+      console.log(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <Flex align="center" p={4} boxShadow="md" bgColor="white" paddingX={'40px'}>
@@ -70,7 +106,7 @@ const MyStudents = () => {
       {myStudents.map((item, index) => {
         return (
           <Box key={index} margin={"24px"}>
-            <StudentCard data={item} unAssignStudent={unAssignStudent} />
+            <StudentCard data={item} unAssignStudent={unAssignStudent} assignMarks={assignMarks} />
           </Box>
         );
       })}

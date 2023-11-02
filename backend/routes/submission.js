@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-// Route to get students without a MentorGroup
+// Route to lock submission of a group 
 router.post("/lock", async (req, res) => {
   try {
     const { studentData, mentorId } = req.body
@@ -9,12 +9,11 @@ router.post("/lock", async (req, res) => {
       console.log("Please provide all the details");
       return res.status(400).json({ error: "Please provide all the details" });
     }
-
+    
     if(studentData.length < 3){
       console.log("Please select atleast 3 students");
       return res.status(403).json({ error: "Please select atleast 3 students" });
     }
-    console.log("studentData: ", studentData``);
 
     let unMarked = false;
     for (const student of studentData){
@@ -51,10 +50,10 @@ router.post("/lock", async (req, res) => {
     }
 
 
-    
-    res.json({data: studentsWithoutMentorGroup});
+    console.log("\n\n------------------4444-------------\n\n");
+    res.json({data: `Submission for mentor_id: ${mentorId} locked successfully `});
   } catch (error) {
-    console.error("Error fetching students without MentorGroup:", error);
+    console.error("Error Locking the submission of the group:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
