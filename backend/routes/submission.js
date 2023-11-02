@@ -92,6 +92,7 @@ router.post("/lock", async (req, res) => {
       });
     }
 
+    
     res.json({data: `Submission for mentor_id: ${mentorId} locked successfully `});
   } catch (error) {
     console.error("Error Locking the submission of the group:", error);
