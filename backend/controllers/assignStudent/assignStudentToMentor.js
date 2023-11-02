@@ -1,7 +1,8 @@
+const {isAssignedUnderThisMentor} = require("../../utils/helper");
+
 const assignStudentToMentor = async (req, res) => {
   try {
     // get all the required fields from the body
-    // TODO : we will be getting the ID in the BODY ????
     let { studentId, mentorId } = req.body;
     // validation for the required fields
     if (!studentId || !mentorId) {
@@ -89,15 +90,15 @@ const unAssignStudentFromMentor = async (req, res) => {
       }
       studentId = parseInt(studentId);
       mentorId = parseInt(mentorId);
-  
-      console.log("studentId: ", studentId);
-      console.log("mentorId: ", mentorId);
-  
+
+      const isValidStudent = await isAssignedUnderThisMentor(req, studentId, mentorId);
+      if(!isValidStudent){
+        return res.status(403).json({error: "Student is not assigned under this mentor"})
+      }
   
       const deletedStudent = await req.prisma.mentorGroup.delete({
         where: {
           student_id: studentId,
-          mentor_id: mentorId,
         }
       });
   

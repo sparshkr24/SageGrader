@@ -25,6 +25,7 @@ const AddStudents = () => {
   const [studentData, setStudentData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Track the current page number
   const [assignedStudentsList, setAssignedStudentsList] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     const fetchAssignedStudents = async () => {
@@ -46,7 +47,8 @@ const AddStudents = () => {
     const fetchStudentData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/student?page=${currentPage}`);
+        const response = await api.get(`/student?page=${currentPage}&filter=${filter}`);
+        console.log("students: ", response.data.data);
         setStudentData(response.data.data);
       } catch (error) {
         console.log(error);
@@ -56,7 +58,7 @@ const AddStudents = () => {
     };
 
     fetchStudentData();
-  }, [currentPage]);
+  }, [currentPage, filter]);
 
   const handleNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -77,10 +79,9 @@ const AddStudents = () => {
       };
       const res = await api.post("/assignStudent", bodyData);
       if (res.status === 200) {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         toast.success("Student assigned successfully");
-      } else {
-        console.log(res.data.error);
+        setAssignedStudentsList([...assignedStudentsList, studentId]);
       }
     } catch (error) {
       toast.error("Cannot assign student");
@@ -89,6 +90,14 @@ const AddStudents = () => {
       setSmallLoading(false);
     }
   };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  }
+  
+  useEffect(()=>{
+    console.log("filter changed to: ", filter)
+  }, [filter])
 
   if (loading)
     return (
@@ -110,11 +119,10 @@ const AddStudents = () => {
         gap={10}
         marginTop={"20px"}
       >
-        <HStack width={"300px"}>
-          <Select placeholder="Select option">
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+        <HStack width={"300px"} height={50}>
+          <Select onChange={handleFilterChange} value={filter}>
+            <option value="all">All</option>
+            <option value="unassigned">Unassigned</option>
           </Select>
           <Box>
             {smallLoading && <PuffLoader size={"40"} color="#36d7b7" />}

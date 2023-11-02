@@ -28,6 +28,7 @@ app.use("/api/mentor/", mentorRouter);
 app.use("/api/marks/", marksRouter);
 app.use("/api/assignStudent/", assignStudentRouter);
 app.use("/api/submission/", submissionRouter);
+app.use("/api/generatePDF/", require("./routes/pdf"));
 
 app.listen(port, () => {
   console.log(`Listening to requests on port ${port}`);
