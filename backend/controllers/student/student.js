@@ -1,12 +1,23 @@
 const studentWithoutMentor = async (req, res) => {
   try {
-    let { page } = req.query;
+    console.log();
+    let { page, filter } = req.query;
     page = parseInt(page);
-
     const rowsPerPage = 10;
 
     const take = rowsPerPage;
     const skip = (page - 1) * rowsPerPage;
+
+
+    if(filter == "unassigned"){
+      console.log("2");
+      const unassignedStudents = await req.prisma.$queryRaw`SELECT * FROM "Student"
+        WHERE id NOT IN (SELECT student_id FROM "MentorGroup")
+        LIMIT ${take}
+        OFFSET ${skip}`
+      return res.status(200).json({ data: unassignedStudents });
+    }
+    
     const allStudents = await req.prisma.student.findMany({
       take: take,
       skip: skip,
