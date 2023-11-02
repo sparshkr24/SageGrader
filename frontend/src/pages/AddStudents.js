@@ -11,12 +11,17 @@ import {
   Tr,
   VStack,
   Button,
+  Flex,
+  HStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 import axios from "axios";
+import { PacmanLoader, PuffLoader } from "react-spinners";
 
 const AddStudents = () => {
+  const [loading, setLoading] = useState(false);
+  const [smallLoading, setSmallLoading] = useState(false);
   const [studentData, setStudentData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Track the current page number
   const [assignedStudentsList, setAssignedStudentsList] = useState([]);
@@ -34,12 +39,14 @@ const AddStudents = () => {
         console.log("error while fetching assigned students", error);
       }
     };
+
     fetchAssignedStudents();
   }, []);
 
   useEffect(() => {
     // Function to fetch student data based on the current page
     const fetchStudentData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `http://localhost:5000/api/student?page=${currentPage}`
@@ -47,6 +54,8 @@ const AddStudents = () => {
         setStudentData(response.data.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -65,6 +74,7 @@ const AddStudents = () => {
 
   const assignStudent = async (studentId) => {
     try {
+      setSmallLoading(true);
       const bodyData = {
         studentId: studentId,
         mentorId: 10,
@@ -80,9 +90,21 @@ const AddStudents = () => {
         console.log(res.data.error);
       }
     } catch (error) {
+      toast.error("Cannot assign student");
       console.log("error while assigning student", error);
+    } finally {
+      setSmallLoading(false);
     }
   };
+
+  if (loading)
+    return (
+      <>
+        <Flex align="center" justify="center" h="500px" w="100%">
+          <PacmanLoader color="#36d7b7" />
+        </Flex>
+      </>
+    );
 
   return (
     <>
@@ -95,13 +117,14 @@ const AddStudents = () => {
         gap={10}
         marginTop={"20px"}
       >
-        <Box width={"300px"}>
+        <HStack width={"300px"}>
           <Select placeholder="Select option">
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
           </Select>
-        </Box>
+          <Box>{smallLoading && <PuffLoader size={'40'} color="#36d7b7" />}</Box>
+        </HStack>
         <TableContainer>
           <Table colorScheme="teal">
             {/* <TableCaption>List of all students</TableCaption> */}

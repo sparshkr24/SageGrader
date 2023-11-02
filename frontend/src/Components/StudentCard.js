@@ -7,16 +7,14 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 
 const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
-  const mentorId = 10;
-  const [marks, setMarks] = useState({  
+  const [marks, setMarks] = useState({
     ideation: data.ideation,
     execution: data.execution,
     pitch: data.pitch,
   });
-  
 
   // const assignMarks = async (marks) => {
   //   console.log("Save button clicked");
@@ -38,9 +36,9 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
   //   }
   // }
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("marks", marks);
-  }, [marks])
+  }, [marks]);
 
   return (
     <>
@@ -80,12 +78,12 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
               size={"sm"}
               width={"75px"}
               onChange={(newValueString) => {
-                const newValue = parseInt(newValueString); 
+                const newValue = parseInt(newValueString);
                 // console.log("New Value:", !isNaN(newValue) ? newValue: null);
                 setMarks({
                   ...marks,
-                  ideation: !isNaN(newValue) ? newValue: null,
-                })
+                  ideation: !isNaN(newValue) ? newValue : null,
+                });
               }}
               isDisabled={data.lock_status}
             >
@@ -101,14 +99,13 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
               size={"sm"}
               width={"75px"}
               onChange={(newValueString) => {
-                const newValue = parseInt(newValueString); 
+                const newValue = parseInt(newValueString);
                 // console.log("New Value:", !isNaN(newValue) ? newValue: null);
                 setMarks({
                   ...marks,
-                  execution: !isNaN(newValue) ? newValue: null,
-                })
+                  execution: !isNaN(newValue) ? newValue : null,
+                });
               }}
-
               isDisabled={data.lock_status}
             >
               <NumberInputField />
@@ -123,12 +120,12 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
               size={"sm"}
               width={"75px"}
               onChange={(newValueString) => {
-                const newValue = parseInt(newValueString); 
+                const newValue = parseInt(newValueString);
                 // console.log("New Value:", !isNaN(newValue) ? newValue: null);
                 setMarks({
                   ...marks,
-                  pitch: !isNaN(newValue) ? newValue: null,
-                })
+                  pitch: !isNaN(newValue) ? newValue : null,
+                });
               }}
               isDisabled={data.lock_status}
             >
@@ -136,7 +133,14 @@ const StudentCard = ({ data, unAssignStudent, assignMarks }) => {
             </NumberInput>
           </HStack>
           <Stack direction={{ base: "column", md: "row" }}>
-            <Button isDisabled={data.lock_status} onClick={() => {assignMarks(data.id, marks)}} variant="outline" colorScheme="green">
+            <Button
+              isDisabled={data.lock_status}
+              onClick={() => {
+                assignMarks(data.id, marks);
+              }}
+              variant="outline"
+              colorScheme="green"
+            >
               Save
             </Button>
             <Button

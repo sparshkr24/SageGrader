@@ -5,28 +5,35 @@ import {
   Button,
   CheckboxIcon,
   Flex,
+  HStack,
   Heading,
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 import axios from "axios";
+import { PacmanLoader, PuffLoader } from "react-spinners";
 
 // import icon from "./MyStudents/greenCheck.svg";
 
 const MyStudents = () => {
+  const [loading, setLoading] = useState(false);
+  const [smallLoading, setSmallLoading] = useState(false);
   const [myStudents, setMyStudents] = useState([]);
   const mentorId = 10;
 
   useEffect(() => {
     const fetchMyStudentData = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `http://localhost:5000/api/assignStudent/mentor?mentorId=${mentorId}`
         );
         setMyStudents(response.data.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,6 +42,7 @@ const MyStudents = () => {
 
   const handleLockSubmissions = async () => {
     try {
+      setSmallLoading(true);
       const bodyData = {
         studentData: myStudents,
         mentorId: mentorId,
@@ -45,7 +53,7 @@ const MyStudents = () => {
       );
       console.log(res.data.data);
 
-      if(res.status === 200){
+      if (res.status === 200) {
         const newStudents = myStudents.map((student) => {
           return {
             ...student,
@@ -53,14 +61,27 @@ const MyStudents = () => {
           };
         });
         setMyStudents(newStudents);
+        toast.success("Submission locked successfully");
       }
     } catch (error) {
+      if (myStudents.length < 3) {
+        toast.error(
+          "Please select at least 3 students before locking submission"
+        );
+      } else {
+        toast.error(
+          "Please assign marks to all students before locking submission"
+        );
+      }
       console.log(error);
+    } finally {
+      setSmallLoading(false);
     }
   };
 
   const unAssignStudent = async (id) => {
     try {
+      setSmallLoading(true);
       const res = await axios.delete(
         `http://localhost:5000/api/assignStudent?studentId=${id}&mentorId=${mentorId}`
       );
@@ -74,14 +95,17 @@ const MyStudents = () => {
         toast.success("Student removed successfully");
       }
     } catch (error) {
-      toast.error("Error while removing student");
+      toast.error("Cannot remove student");
       console.log(error);
+    } finally {
+      setSmallLoading(false);
     }
   };
 
   const assignMarks = async (id, marks) => {
     console.log("Save button clicked");
     try {
+      setSmallLoading(true);
       const bodyData = {
         studentId: id,
         mentorId: mentorId,
@@ -105,10 +129,14 @@ const MyStudents = () => {
           }
         });
         setMyStudents(newStudents);
+        toast.success("Marks assigned successfully");
       }
       console.log(res.data.data);
     } catch (error) {
+      toast.error("Please assign marks for each category before saving");
       console.log(error);
+    } finally {
+      setSmallLoading(false);
     }
   };
 
@@ -138,25 +166,41 @@ const MyStudents = () => {
           </Button>
         )}
       </Flex>
-      <Flex
-        align="center"
-        p={4}
-        paddingX={"40px"}
-        color={"yellow.500"}
-      >
-        <Text fontWeight="semibold" fontSize="lg">Note:{" "}</Text> Please select atleast 3 students to lock the submission.
-      </Flex>
-      {myStudents.map((item, index) => {
-        return (
-          <Box key={index} margin={"24px"}>
-            <StudentCard
-              data={item}
-              unAssignStudent={unAssignStudent}
-              assignMarks={assignMarks}
-            />
-          </Box>
-        );
-      })}
+      <HStack align="center" p={4} paddingX={"40px"} color={"yellow.500"}>
+        <Text>
+          <Text fontWeight="semibold" fontSize="lg">
+            Note
+          </Text>{" "}
+          Please select atleast 3 students to lock the submission.
+        </Text>
+        <Box>
+          {smallLoading && (
+            <Flex paddingTop={'4px'}>
+              <PuffLoader size={"40"} color="#36d7b7" />
+            </Flex>
+          )}
+        </Box>
+      </HStack>
+
+      {/* Dispaly a loader while fetching the data */}
+      {loading && (
+        <Flex align="center" justify="center" h="500px" w="100%">
+          <PacmanLoader color="#36d7b7" />
+        </Flex>
+      )}
+
+      {!loading &&
+        myStudents.map((item, index) => {
+          return (
+            <Box key={index} margin={"24px"}>
+              <StudentCard
+                data={item}
+                unAssignStudent={unAssignStudent}
+                assignMarks={assignMarks}
+              />
+            </Box>
+          );
+        })}
     </>
   );
 };
